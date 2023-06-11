@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
-    console.log("someone joined");
+   // console.log("someone joined");
     socket.on('joinning', (groupid) => {
         const groupSockets = io.sockets.adapter.rooms.get(groupid);
         if (groupSockets) {
@@ -33,11 +33,11 @@ io.on('connection', (socket) => {
             const randomSocket = socketsArray[Math.floor(Math.random() * socketsArray.length)];
             socket.join(groupid)
             socket.groupid = groupid
-            console.log("here", socketsArray);
+         //   console.log("here", socketsArray);
 
             io.to(randomSocket).emit('supply');
         } else {
-            console.log("shit");
+           // console.log("shit");
             socket.join(groupid)
             socket.groupid = groupid
         }
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('freshdata', (text) => {
-        console.log(socket.groupid, socket.id, text);
+     //   console.log(socket.groupid, socket.id, text);
         socket.to(socket.groupid).emit('freshdata', text);
     })
 
