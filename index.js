@@ -25,27 +25,22 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
-   // console.log("someone joined");
+    console.log("someone joined");
     socket.on('joinning', (groupid) => {
+        socket.join(groupid)
+        socket.groupid = groupid
+    })
+
+    socket.on('give supply', (groupid) => {
         const groupSockets = io.sockets.adapter.rooms.get(groupid);
-        if (groupSockets) {
-            const socketsArray = Array.from(groupSockets);
-            const randomSocket = socketsArray[Math.floor(Math.random() * socketsArray.length)];
-            socket.join(groupid)
-            socket.groupid = groupid
-         //   console.log("here", socketsArray);
-
-            io.to(randomSocket).emit('supply');
-        } else {
-           // console.log("shit");
-            socket.join(groupid)
-            socket.groupid = groupid
-        }
-
+        const socketsArray = Array.from(groupSockets);
+        const randomSocket = socketsArray[0];
+        if (randomSocket === socket.id) return;
+        io.to(randomSocket).emit('supply');
     })
 
     socket.on('freshdata', (text) => {
-     //   console.log(socket.groupid, socket.id, text);
+        console.log(socket.groupid, socket.id, text);
         socket.to(socket.groupid).emit('freshdata', text);
     })
 
